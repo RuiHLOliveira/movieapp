@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="menu.js"></script>
+</head>
+<body>
+    
+    <script>
+        window.onload = onInit
+
+        function onInit() {
+        buscarGeneros().then(generos => {
+            console.log('dados',generos)
+            montaListaGeneros(generos);
+        });
+
+            let htmlMenu = menu();
+            let element = document.getElementById('nav');
+            element.innerHTML = htmlMenu;
+        }
+
+        async function buscarGeneros() {
+            const url = 'http://localhost:8000/generos';
+            const config = {
+                method: 'GET'
+            }
+            return await fetch(url, config)
+            .then(async (response) => {
+                let text = await response.text()
+                let dados = JSON.parse(text);
+                return dados
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+        }
+
+        function montaListaGeneros(generos) {
+            let divListaGeneros = document.getElementById('listaGeneros');
+
+            let html = '<table class="table">';
+            generos.forEach(genero => {
+                html += `<tr><td>${genero.nome}</td></tr>`
+            });
+
+            divListaGeneros.innerHTML = html+'</table>'
+        }
+
+    </script>
+    
+    <nav id="nav"></nav>
+
+    <h1>Generos</h1>
+
+
+    <div id="listaGeneros"></div>
+    
+</body>
+</html>

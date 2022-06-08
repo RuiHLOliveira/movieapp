@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="menu.js"></script>
+</head>
+
+<body>
+    <script>
+        window.onload = onInit
+
+        function onInit() {
+            buscarFilmes().then(filmes => {
+                console.log('dados',filmes)
+                montaListaFilmes(filmes);
+            });
+
+            let htmlMenu = menu();
+            let element = document.getElementById('nav');
+            element.innerHTML = htmlMenu;
+        }
+
+        async function buscarFilmes() {
+            const url = 'http://localhost:8000/filmes';
+            const config = {
+                method: 'GET'
+            }
+            return await fetch(url, config)
+            .then(async (response) => {
+                let text = await response.text()
+                let dados = JSON.parse(text);
+                return dados
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+        }
+
+        function montaListaFilmes(filmes) {
+            let divListaFilmes = document.getElementById('listaFilmes');
+
+            let html = '<table class="table">';
+            filmes.forEach(filme => {
+                html += `<tr><td>${filme.nome}</td><td>${filme.descricao ?? ''}</td><td>${filme.imdb ?? ''}</td><td>${filme.datalancamento}</td></tr>`
+            });
+
+            divListaFilmes.innerHTML = html+'</table>'
+        }
+
+
+    </script>
+
+    <nav id="nav"></nav>
+
+    <h1>Lista de Filmes</h1>
+
+    <ul>
+        <li>mostrar todos os filmes</li>
+        <li>filtro de filmes (genero, titulo escrito, ano lançamento)</li>
+        <li>mostrar um filme</li>
+        <li>cadastro genero (criar, editar, deletar)</li>
+        <li>cadastro filme (criar, editar, deletar)</li>
+    </ul>
+
+    <div id="listaFilmes"></div>
+</body>
+
+</html>
